@@ -3,14 +3,22 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: ["main"]
+  workflow_dispatch:  # Allows manual triggering from the GitHub UI
 
+# Sets permissions of the GITHUB_TOKEN
 permissions:
   contents: read
   pages: write
   id-token: write
 
+# Allow only one concurrent deployment
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
 jobs:
-  deploy:
+  build:
+    name: Build
     runs-on: ubuntu-latest
     
     steps:
@@ -20,25 +28,40 @@ jobs:
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
         with:
-          bun-version: latest  # Ensures stability
-
+          bun-version: latest
+          
       - name: Install Dependencies
-        run: bun install
-
+        run: bun install --frozen-lockfile
+        
       - name: Build Project
         run: bun run build
-
-      - name: Setup GitHub Pages
-        uses: actions/configure-pages@v5
-
+        env:
+          NODE_ENV: production
+      
+      - name: Cache Build Output
+        uses: actions/cache@v3
+        with:
+          path: ./dist
+          key: ${{ runner.os }}-build-${{ github.sha }}
+      
       - name: Upload Build Artifacts
         uses: actions/upload-pages-artifact@v3
         with:
           path: './dist'  # Ensure this matches your build output folder
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+  
+  deploy:
+    name: Deploy
+    needs: build
+    runs-on: ubuntu-latest
     
     environment:
       name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+      
+    steps:
+      - name: Setup GitHub Pages
+        uses: actions/configure-pages@v5
+      
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
