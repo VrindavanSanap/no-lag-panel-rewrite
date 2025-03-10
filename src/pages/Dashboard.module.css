@@ -1,0 +1,39 @@
+.top_header {
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: #f8f9fa; /* Light gray background */
+  z-index: 1000;
+  padding: 10px;
+  padding-inline: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Softer shadow */
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.top_header .title h1 {
+  font-size: 24px; /* Adjusted font size */
+  color: #343a40; /* Dark gray color for the title */
+  margin: 0; /* Reset default margin */
+}
+
+.profile_img {
+  width: 50px; /* Adjusted size */
+  height: 50px; /* Adjusted size */
+  border-radius: 50%; /* Ensure perfect circle */
+  cursor: pointer;
+  border: 2px solid #fff; /* Add a white border */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  object-fit: cover; /* Ensure image fills the circle */
+}
+
+.cards_container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 20px; /* Increased gap for better spacing */
+  width: 100%;
+  padding: 40px 30px;
+}
